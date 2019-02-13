@@ -101,7 +101,7 @@ find_package(catkin REQUIRED COMPONENTS
 ## CATKIN_DEPENDS: catkin_packages dependent projects also need
 ## DEPENDS: system dependencies of this project that dependent projects also need
 catkin_package(
- INCLUDE_DIRS include
+#INCLUDE_DIRS include
  LIBRARIES roomba_teleop_meiji
  CATKIN_DEPENDS joy roomba_500driver_meiji roscpp sensor_msgs
 #  DEPENDS system_lib
@@ -142,6 +142,8 @@ add_executable(electric_joystick_drive src/electric_joystick_drive.cpp)
 #   ${catkin_LIBRARIES}
 # )
 target_link_libraries(electric_joystick_drive ${catkin_LIBRARIES})
+
+add_dependencies(electric_joystick_drive roomba_500driver_meiji_generate_messages_cpp)
 
 #############
 ## Install ##

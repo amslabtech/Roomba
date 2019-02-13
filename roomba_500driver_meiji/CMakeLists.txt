@@ -10,6 +10,7 @@ find_package(catkin REQUIRED COMPONENTS
   roscpp
   sensor_msgs
   tf
+  message_generation
 )
 
 ## System dependencies are found with CMake's conventions
@@ -116,7 +117,7 @@ generate_messages(
 catkin_package(
  INCLUDE_DIRS include
  LIBRARIES roomba_500driver_meiji
- CATKIN_DEPENDS geometry_msgs nav_msgs roscpp sensor_msgs tf
+ CATKIN_DEPENDS message_runtime geometry_msgs nav_msgs roscpp sensor_msgs tf
 #  DEPENDS system_lib
 )
 
@@ -156,6 +157,10 @@ add_executable(serial src/serial.cpp)
 target_link_libraries(main500 roomba_500driver_meiji ${catkin_LIBRARIES})
 target_link_libraries(roomba500sci roomba_500driver_meiji ${catkin_LIBRARIES})
 target_link_libraries(serial roomba_500driver_meiji ${catkin_LIBRARIES})
+
+add_dependencies(main500 roomba_500driver_meiji_generate_messages_cpp)
+add_dependencies(roomba500sci roomba_500driver_meiji_generate_messages_cpp)
+add_dependencies(serial roomba_500driver_meiji_generate_messages_cpp)
 
 #############
 ## Install ##
