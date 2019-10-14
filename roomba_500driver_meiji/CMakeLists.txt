@@ -135,6 +135,7 @@ include_directories(
 
 ## Declare a C++ library
 add_library(roomba_500driver_meiji src/main500.cpp src/roomba500sci.cpp src/serial.cpp)
+add_dependencies(roomba_500driver_meiji ${PROJECT_NAME}_generate_messages_cpp ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
 
 ## Add cmake target dependencies of the library
 ## as an example, code may need to be generated before libraries
@@ -158,9 +159,9 @@ target_link_libraries(main500 roomba_500driver_meiji ${catkin_LIBRARIES})
 target_link_libraries(roomba500sci roomba_500driver_meiji ${catkin_LIBRARIES})
 target_link_libraries(serial roomba_500driver_meiji ${catkin_LIBRARIES})
 
-add_dependencies(main500 roomba_500driver_meiji_generate_messages_cpp)
-add_dependencies(roomba500sci roomba_500driver_meiji_generate_messages_cpp)
-add_dependencies(serial roomba_500driver_meiji_generate_messages_cpp)
+add_dependencies(main500 ${PROJECT_NAME}_generate_messages_cpp ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
+add_dependencies(roomba500sci ${PROJECT_NAME}_generate_messages_cpp ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
+add_dependencies(serial ${PROJECT_NAME}_generate_messages_cpp ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
 
 #############
 ## Install ##
