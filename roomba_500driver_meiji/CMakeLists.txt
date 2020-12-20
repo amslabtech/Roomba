@@ -146,6 +146,7 @@ add_dependencies(roomba_500driver_meiji ${PROJECT_NAME}_generate_messages_cpp ${
 add_executable(main500 src/main500.cpp)
 add_executable(roomba500sci src/roomba500sci.cpp)
 add_executable(serial src/serial.cpp)
+add_executable(twist_to_roombactrl_converter src/twist_to_roombactrl_converter.cpp)
 
 ## Add cmake target dependencies of the executable
 ## same as for the library above
@@ -158,10 +159,12 @@ add_executable(serial src/serial.cpp)
 target_link_libraries(main500 roomba_500driver_meiji ${catkin_LIBRARIES})
 target_link_libraries(roomba500sci roomba_500driver_meiji ${catkin_LIBRARIES})
 target_link_libraries(serial roomba_500driver_meiji ${catkin_LIBRARIES})
+target_link_libraries(twist_to_roombactrl_converter roomba_500driver_meiji ${catkin_LIBRARIES})
 
 add_dependencies(main500 ${PROJECT_NAME}_generate_messages_cpp ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
 add_dependencies(roomba500sci ${PROJECT_NAME}_generate_messages_cpp ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
 add_dependencies(serial ${PROJECT_NAME}_generate_messages_cpp ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
+add_dependencies(twist_to_roombactrl_converter ${PROJECT_NAME}_generate_messages_cpp ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
 
 #############
 ## Install ##
