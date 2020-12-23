@@ -1,0 +1,47 @@
+<?xml version="1.0"?>
+
+<launch>
+  <arg name="model" default="$(find roomba_description)/urdf/roomba.urdf.xacro"/>
+
+  <arg name="paused" default="false"/>
+  <arg name="use_sim_time" default="true"/>
+  <arg name="gui" default="true"/>
+  <arg name="headless" default="false"/>
+  <arg name="debug" default="false"/>
+  <arg name="x" default="0.0"/>
+  <arg name="y" default="0.0"/>
+  <arg name="z" default="0.0"/>
+  <arg name="roll" default="0.0"/>
+  <arg name="pitch" default="0.0"/>
+  <arg name="yaw" default="0.0"/>
+  <arg name="world" default="$(find amsl_gazebo_worlds)/worlds/ikuta_building_d_1f.world"/>
+
+  <include file="$(find gazebo_ros)/launch/empty_world.launch">
+    <arg name="world_name" value="$(arg world)"/>
+    <arg name="debug" value="$(arg debug)" />
+    <arg name="gui" value="$(arg gui)" />
+    <arg name="paused" value="$(arg paused)"/>
+    <arg name="use_sim_time" value="$(arg use_sim_time)"/>
+    <arg name="headless" value="$(arg headless)"/>
+  </include>
+
+  <group ns="roomba">
+    <param name="robot_description" command="$(find xacro)/xacro $(arg model)"/>
+    <include file="$(find roomba_description)/launch/control.launch"/>
+  </group>
+
+  <node name="urdf_spawner" pkg="gazebo_ros" type="spawn_model" respawn="false" output="screen"
+    args="-urdf
+          -model roomba
+          -param roomba/robot_description
+          -x $(arg x)
+          -y $(arg y)
+          -z $(arg z)
+          -R $(arg roll)
+          -P $(arg pitch)
+          -Y $(arg yaw)"/>
+
+  <node name="vel_relay" pkg="topic_tools" type="relay" args="cmd_vel roomba/diff_drive_controller/cmd_vel"/>
+  <node name="odom_relay" pkg="topic_tools" type="relay" args="roomba/diff_drive_controller/odom odom"/>
+
+</launch>

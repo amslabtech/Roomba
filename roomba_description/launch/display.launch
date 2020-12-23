@@ -1,0 +1,22 @@
+<?xml version="1.0" ?>
+<launch>
+    <arg name="model" default="$(find roomba_description)/urdf/roomba.urdf.xacro"/>
+
+    <group ns="roomba">
+        <param name="robot_description" command="$(find xacro)/xacro $(arg model)"/>
+
+        <!-- send fake joint value -->
+        <node name="joint_state_publisher" pkg="joint_state_publisher_gui" type="joint_state_publisher_gui">
+            <remap from="robot_description" to="robot_description"/>
+        </node>
+
+        <!-- Combine joint values -->
+        <node name="robot_state_publisher" pkg="robot_state_publisher" type="robot_state_publisher">
+            <remap from="robot_description" to="robot_description"/>
+        </node>
+    </group>
+
+    <!-- show in Rviz -->
+    <node name="rviz" pkg="rviz" type="rviz" args="-d $(find roomba_description)/launch/roomba.rviz"/>
+
+</launch>
