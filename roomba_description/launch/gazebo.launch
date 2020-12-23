@@ -14,9 +14,10 @@
   <arg name="roll" default="0.0"/>
   <arg name="pitch" default="0.0"/>
   <arg name="yaw" default="0.0"/>
+  <arg name="world" default="$(find amsl_gazebo_worlds)/worlds/ikuta_building_d_1f.world"/>
 
   <include file="$(find gazebo_ros)/launch/empty_world.launch">
-    <arg name="world_name" value="$(find amsl_gazebo_worlds)/worlds/ikuta_building_d_1f.world"/>
+    <arg name="world_name" value="$(arg world)"/>
     <arg name="debug" value="$(arg debug)" />
     <arg name="gui" value="$(arg gui)" />
     <arg name="paused" value="$(arg paused)"/>
