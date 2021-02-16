@@ -15,7 +15,7 @@ d_enc_count_l_(0),d_enc_count_r_(0),
 d_pre_enc_l_(0), d_pre_enc_r_(0){
 	ser_ = new Serial(baud,dev,80,0);
 	time_= new Timer();
-	
+
 	time_->sleep(1);
 	roomba_500driver_meiji::Roomba500State sensor;
 	getSensors(sensor);
@@ -51,32 +51,32 @@ void roombaSci::powerOff(){
 
 void roombaSci::clean(){
 	sendOPCODE(roombaSci::OC_CLEAN);
-	time_->sleep(COMMAND_WAIT);	
+	time_->sleep(COMMAND_WAIT);
 }
 
 void roombaSci::safe(){
 	sendOPCODE(roombaSci::OC_SAFE);
-	time_->sleep(COMMAND_WAIT);	
+	time_->sleep(COMMAND_WAIT);
 }
 void roombaSci::full(){
 	sendOPCODE(roombaSci::OC_FULL);
-	time_->sleep(COMMAND_WAIT);	
+	time_->sleep(COMMAND_WAIT);
 }
 void roombaSci::spot(){
 	sendOPCODE(roombaSci::OC_SPOT);
-	time_->sleep(COMMAND_WAIT);	
+	time_->sleep(COMMAND_WAIT);
 }
 void roombaSci::max(){
 	sendOPCODE(roombaSci::OC_MAX);
-	time_->sleep(COMMAND_WAIT);	
+	time_->sleep(COMMAND_WAIT);
 }
 
 void roombaSci::dock(){
 	const unsigned char seq[]={OC_BUTTONS, roombaSci::BUTTON_DOCK};
 	ser_->write(seq,2);
-	time_->sleep(COMMAND_WAIT);	
+	time_->sleep(COMMAND_WAIT);
 }
-	
+
 // example
 // MB_MAIN_BRUSH | MB_VACUUM | MB_SIDE_BRUSH
 // puts all motors driving.
@@ -95,17 +95,17 @@ void roombaSci::forceSeekingDock(){
 
 
 void roombaSci::drive(short velocity, short radius){
-	
+
 	unsigned char vhi = (unsigned char)(velocity >> 8);
 	unsigned char vlo = (unsigned char)(velocity & 0xff);
 	unsigned char rhi = (unsigned char)(radius   >> 8);
 	unsigned char rlo = (unsigned char)(radius   & 0xff);
-	
+
 	const unsigned char seq[]={OC_DRIVE, vhi, vlo, rhi, rlo};
 	ser_->write(seq,5);
 	time_->sleep(COMMAND_WAIT);
 }
-	
+
 void roombaSci::driveDirect(float velocity, float yawrate){
 	short right=1000*(velocity+0.5*0.235*yawrate);
 	short left=1000*(velocity-0.5*0.235*yawrate);
@@ -147,7 +147,7 @@ float roombaSci::velToPWM(float velocity){
 	return pwm;
 }
 
-void roombaSci::song(int song_number, int song_length){
+void roombaSci::song(unsigned char song_number, unsigned char song_length){
 	const unsigned char mode_seq[]={OC_SAFE};
 
 	ser_->write(mode_seq,1);
@@ -159,7 +159,7 @@ void roombaSci::song(int song_number, int song_length){
 	time_->sleep(COMMAND_WAIT);
 }
 
-void roombaSci::playing(int song_number){
+void roombaSci::playing(unsigned char song_number){
 	const unsigned char command_seq[]={OC_PLAY, song_number};
 
 	ser_->write(command_seq,2);
@@ -188,7 +188,7 @@ int roombaSci::receive(unsigned char* pack, int byte)
 int roombaSci::getSensors(roomba_500driver_meiji::Roomba500State& sensor){
 	const unsigned char seq[]={OC_SENSORS, ALL_PACKET};
 	int ret = ser_->write(seq,2);
-	time_->sleep(COMMAND_WAIT);	
+	time_->sleep(COMMAND_WAIT);
 
 	int nbyte;
 	nbyte=receive();
@@ -197,8 +197,8 @@ int roombaSci::getSensors(roomba_500driver_meiji::Roomba500State& sensor){
 		packetToStruct(sensor, packet_);
 	}
 
-	time_->sleep(COMMAND_WAIT);	
-	
+	time_->sleep(COMMAND_WAIT);
+
 	return ret;
 }
 
@@ -210,7 +210,7 @@ void roombaSci::packetToStruct(
 
 	ret.bump.right=(bool)(0x01&pack[0]);
 	ret.bump.left=(bool)(0x01&(pack[0]>>1));
-	
+
 	ret.wheeldrop.right=(bool)(0x01&(pack[0]>>2));
 	ret.wheeldrop.left=(bool)(0x01&(pack[0]>>3));
 	ret.wheeldrop.caster=(bool)(0x01&(pack[0]>>4));
@@ -223,51 +223,51 @@ void roombaSci::packetToStruct(
 	ret.cliff.front_left=(bool)(0x01&(pack[3]));
 	ret.cliff.right=(bool)(0x01&(pack[4]));
 	ret.cliff.front_right=(bool)(0x01&(pack[5]));
-	
+
 	ret.dirt_detect=(unsigned short)(pack[8]);
-	
+
 	ret.cliff.left_signal=(unsigned short)((pack[28]<<8)|pack[29]);
 	ret.cliff.front_left_signal=(unsigned short)((pack[30]<<8)|pack[31]);
 	ret.cliff.front_right_signal=(unsigned short)((pack[32]<<8)|pack[33]);
 	ret.cliff.right_signal=(unsigned short)((pack[34]<<8)|pack[35]);
 
 	ret.virtual_wall=(bool)(0x01&(pack[6]));
-	
+
 	ret.motor_overcurrents.side_brush=(bool)(0x01&(pack[7]));
 	ret.motor_overcurrents.vacuum=(bool)(0x01&(pack[7]>>1));
 	ret.motor_overcurrents.main_brush=(bool)(0x01&(pack[7]>>2));
 	ret.motor_overcurrents.drive_right=(bool)(0x01&(pack[7]>>3));
 	ret.motor_overcurrents.drive_left=(bool)(0x01&(pack[7]>>4));
 
-	
+
 	ret.dirt_detector.left=(pack[8]);
 	ret.dirt_detector.right=(pack[9]);
-	
+
 	ret.remote_control_command=(pack[10]);
-		
+
 	ret.buttons.max=(bool)(0x01&(pack[11]));
 	ret.buttons.clean=(bool)(0x01&(pack[11]>>1));
 	ret.buttons.spot=(bool)(0x01&(pack[11]>>2));
 	ret.buttons.power=(bool)(0x01&(pack[11]>>3));
-	
+
 	ret.distance=(short)((pack[12]<<8)|pack[13]);
 	ret.angle=(short)((pack[14]<<8)|pack[15]);
 	ret.requested_wheel_velocity.right=(short)((pack[48]<<8)|pack[49]);
 	ret.requested_wheel_velocity.left=(short)((pack[50]<<8)|pack[51]);
-	
+
 	ret.dirt_detect=(unsigned short)(pack[39]);
 	ret.open_interface_mode=(unsigned short)(pack[40]);
-	
+
 	ret.song.number=(unsigned short)(pack[41]);
 	ret.song.playing=(unsigned short)(pack[42]);
-	
+
 	ret.oi_stream_num_packets=(unsigned short)(pack[43]);
-	
+
 	ret.requested_velocity=(short)((pack[44]<<8)|pack[45]);
 	ret.requested_radius=(short)((pack[46]<<8)|pack[47]);
 	ret.encoder_counts.left=(unsigned short)((pack[52]<<8)|pack[53]);
 	ret.encoder_counts.right=(unsigned short)((pack[54]<<8)|pack[55]);
-	
+
 	ret.light_bumper.bumper=(unsigned short)(pack[56]);
 	ret.light_bumper.left=(unsigned short)((pack[57]<<8)|pack[58]);;
 	ret.light_bumper.front_left=(unsigned short)((pack[59]<<8)|pack[60]);
@@ -275,17 +275,17 @@ void roombaSci::packetToStruct(
 	ret.light_bumper.center_right=(unsigned short)((pack[63]<<8)|pack[64]);
 	ret.light_bumper.front_right=(unsigned short)((pack[65]<<8)|pack[66]);
 	ret.light_bumper.right=(unsigned short)((pack[67]<<8)|pack[68]);
-	
+
 	ret.opcode.left=(unsigned short)(pack[69]);
 	ret.opcode.right=(unsigned short)(pack[70]);
-	
+
 	ret.stasis=(bool)(0x01&(pack[79]));
-	
+
 	if(std::abs((int)ret.encoder_counts.right-(int)enc_count_r_) >= 60000){
 		if(ret.encoder_counts.right > enc_count_r_){
-			d_enc_count_r_=-65535-enc_count_r_+ret.encoder_counts.right;	
+			d_enc_count_r_=-65535-enc_count_r_+ret.encoder_counts.right;
 		}else{
-			d_enc_count_r_=65535-enc_count_r_+ret.encoder_counts.right;	
+			d_enc_count_r_=65535-enc_count_r_+ret.encoder_counts.right;
 		}
 	}else{
 		d_enc_count_r_=ret.encoder_counts.right - enc_count_r_;
@@ -293,17 +293,17 @@ void roombaSci::packetToStruct(
 
 	if(std::abs((int)ret.encoder_counts.left-(int)enc_count_l_) >= 60000){
 		if(ret.encoder_counts.left > enc_count_l_){
-			d_enc_count_l_=-65535-enc_count_l_+ret.encoder_counts.left;	
+			d_enc_count_l_=-65535-enc_count_l_+ret.encoder_counts.left;
 		}else{
-			d_enc_count_l_=65535-enc_count_l_+ret.encoder_counts.left;	
+			d_enc_count_l_=65535-enc_count_l_+ret.encoder_counts.left;
 		}
 	}else{
 		d_enc_count_l_=ret.encoder_counts.left - enc_count_l_;
 	}
-	
+
 	enc_count_r_ = ret.encoder_counts.right;
 	enc_count_l_ =  ret.encoder_counts.left;
-	
+
 	ret.charging_state=pack[16];
 	ret.voltage=((pack[17]<<8)|pack[18]);
 	ret.current=((pack[19]<<8)|pack[20]);
@@ -323,18 +323,18 @@ int main(void)
 
 	puts("opcode wakeup");
 	roomba.wakeup();
-	
+
 	puts("opcode start and control");
 	roomba.startup();
 
 	puts("opcode drive");
-	roomba.drive(100,STRAIGHT_RADIUS);	
+	roomba.drive(100,STRAIGHT_RADIUS);
 
 	for(int i=0; i<50; i++){
 		roomba.getSensors();
 		roomba.time_->sleep(0.1);
-	}	
-	
+	}
+
 	puts("opcode poweroff");
 	roomba.powerOff();
 }

@@ -11,14 +11,14 @@
 #include <unistd.h>
 
 #include <cmath>
-#include <roomba_500driver_meiji/Roomba500State.h> 
+#include <roomba_500driver_meiji/Roomba500State.h>
 
 class Timer{
 public:
 	void sleep(float sec){
 		long usec=(long)(sec*1000000);
 		usleep(usec);
-	}	
+	}
 };
 
 
@@ -27,8 +27,8 @@ const short DEFAULT_VELOCITY=200; // mm/s
 
 // DRIVE Special codes
 const short STRAIGHT_RADIUS=0x8000;
-const short TURN_CLOCK=-1; 
-const short TURN_CNT_CLOCK=1; 
+const short TURN_CLOCK=-1;
+const short TURN_CNT_CLOCK=1;
 
 
 
@@ -37,12 +37,12 @@ protected:
 
 	int receive(void);
 	int receive(unsigned char* pack, int byte);
-	
+
 	void packetToStruct(roomba_500driver_meiji::Roomba500State& ret, const unsigned char* pack);
 
 	Serial* ser_;
 	unsigned char packet_[80];
-	
+
 	unsigned int enc_count_l_;
 	unsigned int enc_count_r_;
 	int d_enc_count_l_;
@@ -64,7 +64,7 @@ public:
 		GROUP_106=106,
 		GROUP_107=107,
 		ALL_PACKET=100};
-	
+
 	enum OPCODE {
 		OC_START	= 128,
 		OC_BAUD		= 129,
@@ -133,14 +133,14 @@ public:
 		BUTTON_SCHEDULE=0x40,
 		BUTTON_CLOCK=0x80,
 	};
-	
+
 	enum MOTOR{MOTOR_ON=1, MOTOR_OFF=0};
 	enum WALL{ NO_WALL=0, WALL_SEEN=1};
 	enum CLIRFF{ NO_CLIFF=0, CLIFF=1};
 	enum VWALL{NO_VWALL=0, VWALL_SEEN=1};
 	enum OVER_CUR{NO_OVER_C=0, OVER_C=1};
 	enum REMOTE_CC{NO_REMOTE=255};
-	
+
 	enum BUMPS_WHEELDROPS {
 		WHEELDROP_CASTER = 0x10,
 		WHEELDROP_LEFT	 = 0x08,
@@ -187,21 +187,21 @@ public:
 	void spot();
 	void max();
 	void dock();
-	
+
 	void driveMotors(roombaSci::MOTOR_BITS state);
 	void forceSeekingDock();
-	
+
 	void drive(short velocity, short radius);
 	void driveDirect(float velocity, float yawrate);
-	void drivePWM(int right_pwm,int left_pwm);	
-	
-	void song(int song_number, int song_length);
-	void playing(int song_number);
+	void drivePWM(int right_pwm,int left_pwm);
+
+	void song(unsigned char song_number, unsigned char song_length);
+	void playing(unsigned char song_number);
 
 	short velToPWMRight(float velocity);
 	short velToPWMLeft(float velocity);
 	float velToPWM(float velocity);
-	
+
 	int sendOPCODE(roombaSci::OPCODE);
 	int getSensors();
 	int getSensors(roomba_500driver_meiji::Roomba500State& sensor);
@@ -211,7 +211,7 @@ public:
 		d_enc_count_r_=std::min(max_delta,d_enc_count_r_);
 		return d_enc_count_r_;
 	}
-	
+
 	int dEncoderLeft(int max_delta=200){
 		d_enc_count_l_=std::max(-max_delta,d_enc_count_l_);
 		d_enc_count_l_=std::min(max_delta,d_enc_count_l_);
