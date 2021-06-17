@@ -23,7 +23,7 @@ roomba_500driver_meiji::RoombaCtrl roombactrl;
 void cntl_callback(const roomba_500driver_meiji::RoombaCtrlConstPtr& msg){
 	roombactrl = *msg;
 	boost::mutex::scoped_lock(cntl_mutex_);
-	
+
 	switch(msg->mode){
 		case roomba_500driver_meiji::RoombaCtrl::SPOT:
 			roomba->spot();
@@ -34,7 +34,7 @@ void cntl_callback(const roomba_500driver_meiji::RoombaCtrlConstPtr& msg){
 			break;
 
 		case roomba_500driver_meiji::RoombaCtrl::CLEAN:
-			roomba->clean();	
+			roomba->clean();
 			break;
 
 		case roomba_500driver_meiji::RoombaCtrl::POWER:
@@ -88,12 +88,12 @@ void cntl_callback(const roomba_500driver_meiji::RoombaCtrlConstPtr& msg){
 }
 
 void printSensors(const roomba_500driver_meiji::Roomba500State& sens){
-   
-	cout<<"\n\n-------------------"<<endl;	
-	
+
+	cout<<"\n\n-------------------"<<endl;
+
 	//Roombaのセンサデータを出力しています
 	//必要ない場合はコメントアウトしてください
-	
+
 	cout<<"bumps : "<<(bool)sens.bump.right<<"  "<<(bool)sens.bump.left<<endl;
 	cout<<"wheeldrops : "<<(bool)sens.wheeldrop.right<<"  "<<(bool)sens.wheeldrop.left<<"  "<<(bool)sens.wheeldrop.caster<<endl;
 	cout<<"wall : "<<(bool)sens.wall<<endl;
@@ -105,19 +105,19 @@ void printSensors(const roomba_500driver_meiji::Roomba500State& sens){
 		<<sens.motor_overcurrents.main_brush<<" "
 		<<sens.motor_overcurrents.drive_right<<" "
 		<<sens.motor_overcurrents.drive_left<<" "
-		<<endl;	
+		<<endl;
 
 	cout<<"dirt_detector : "<<(short)sens.dirt_detector.left<<" "<<(short)sens.dirt_detector.right<<endl;
 	cout<<"remote control command : "<<(short)sens.remote_control_command<<endl;
 	cout<<"buttons : "<<(bool)sens.buttons.power<<" "<<(bool)sens.buttons.spot<<" "<<(bool)sens.buttons.clean<<" "<<(bool)sens.buttons.max<<endl;
-	
-	cout<<"charging_state : "<<(short)sens.charging_state<<endl;	
-	cout<<"voltage : "<<sens.voltage<<endl;		
-	cout<<"current : "<<sens.current<<endl;	
-	cout<<"temperature : "<<(short)sens.temperature<<endl;	
+
+	cout<<"charging_state : "<<(short)sens.charging_state<<endl;
+	cout<<"voltage : "<<sens.voltage<<endl;
+	cout<<"current : "<<sens.current<<endl;
+	cout<<"temperature : "<<(short)sens.temperature<<endl;
 	cout<<"charge : "<<sens.charge<<endl;
 	cout<<"capacity : "<<sens.capacity<<endl;
-	
+
 }
 
 double piToPI(double rad){
@@ -155,6 +155,7 @@ int main(int argc, char** argv) {
 
 	ros::init(argc, argv, "roomba_driver");
 	ros::NodeHandle n;
+	ros::NodeHandle private_nh("~");
 
 	ros::Subscriber cntl_sub = n.subscribe("/roomba/control", 100, cntl_callback);
 
@@ -163,6 +164,11 @@ int main(int argc, char** argv) {
 	tf::TransformBroadcaster odom_broadcaster;
 
 	ros::Publisher pub_odo= n.advertise<nav_msgs::Odometry >("/roomba/odometry", 100);
+
+    std::string ROBOT_FRAME;
+	private_nh.param("ROBOT_FRAME", ROBOT_FRAME, std::string("base_link"));
+    std::string ODOM_FRAME;
+	private_nh.param("ODOM_FRAME", ODOM_FRAME, std::string("odom"));
 
 	ros::Rate loop_rate(10.0); // should not set this rate more than 20Hz !
 
@@ -186,13 +192,13 @@ int main(int argc, char** argv) {
 		}
 		//printSensors(sens);
 
-		int enc_r=roomba->dEncoderRight();	
+		int enc_r=roomba->dEncoderRight();
 		if(abs(enc_r)==200){
-			enc_r=pre_enc_r;		
+			enc_r=pre_enc_r;
 		}
-		int enc_l=roomba->dEncoderLeft();	
+		int enc_l=roomba->dEncoderLeft();
 		if(abs(enc_l)==200){
-			enc_l=pre_enc_l;		
+			enc_l=pre_enc_l;
 		}
 
 
@@ -217,8 +223,8 @@ int main(int argc, char** argv) {
 		//first, we'll publish the transform over tf
 		geometry_msgs::TransformStamped odom_trans;
 		odom_trans.header.stamp = current_time;
-		odom_trans.header.frame_id = "odom";	//2013.10.09
-		odom_trans.child_frame_id = "base_link";	//2013.10.09
+		odom_trans.header.frame_id = ODOM_FRAME;	//2013.10.09
+		odom_trans.child_frame_id = ROBOT_FRAME;	//2013.10.09
 
 		odom_trans.transform.translation.x = pose.x;
 		odom_trans.transform.translation.y = pose.y;
@@ -231,23 +237,23 @@ int main(int argc, char** argv) {
 		//next, we'll publish the odometry message over ROS
 		nav_msgs::Odometry odom;
 		odom.header.stamp = current_time;
-		odom.header.frame_id = "odom"; //2013.10.09
+		odom.header.frame_id = ODOM_FRAME; //2013.10.09
 
 		//set the position
 		odom.pose.pose.position.x = pose.x;
 		odom.pose.pose.position.y = pose.y;
 		odom.pose.pose.position.z = 0.0;
 		odom.pose.pose.orientation = odom_quat;
-		
+
 		//set the velocity
-		odom.child_frame_id = "base_link";	//2013.10.09
+		odom.child_frame_id = ROBOT_FRAME;	//2013.10.09
 		odom.twist.twist.linear.x = roombactrl.cntl.linear.x;
 		odom.twist.twist.linear.y = 0;
 		odom.twist.twist.angular.z = roombactrl.cntl.angular.z;
 
 
 		pub_odo.publish(odom);	//2013.10.09
-		
+
 		last_time = current_time;
 
 		ros::spinOnce();
