@@ -149,10 +149,6 @@ void calcOdometry(
 
 int main(int argc, char** argv) {
 
-	roomba = new roombaSci(B115200,"/dev/ttyUSB0");
-	roomba->wakeup();
-	roomba->startup();
-
 	ros::init(argc, argv, "roomba_driver");
 	ros::NodeHandle n;
 	ros::NodeHandle private_nh("~");
@@ -164,6 +160,12 @@ int main(int argc, char** argv) {
 	tf::TransformBroadcaster odom_broadcaster;
 
 	ros::Publisher pub_odo= n.advertise<nav_msgs::Odometry >("/roomba/odometry", 100);
+
+    std::string USB_PORT;
+	private_nh.param("USB_PORT", USB_PORT, std::string("/dev/ttyUSB0"));
+	roomba = new roombaSci(B115200, USB_PORT.c_str());
+	roomba->wakeup();
+	roomba->startup();
 
     std::string ROBOT_FRAME;
 	private_nh.param("ROBOT_FRAME", ROBOT_FRAME, std::string("base_link"));
