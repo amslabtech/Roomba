@@ -181,11 +181,11 @@ add_dependencies(twist_to_roombactrl_converter ${PROJECT_NAME}_generate_messages
 # )
 
 ## Mark executables and/or libraries for installation
-# install(TARGETS roomba_500driver_meiji roomba_500driver_meiji_node
-#   ARCHIVE DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
-#   LIBRARY DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
-#   RUNTIME DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
-# )
+install(TARGETS roomba_500driver_meiji main500 roomba500sci serial twist_to_roombactrl_converter
+  ARCHIVE DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
+  LIBRARY DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
+  RUNTIME DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
+)
 
 ## Mark cpp header files for installation
 install(DIRECTORY include/${PROJECT_NAME}/
