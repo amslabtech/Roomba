@@ -195,7 +195,7 @@ install(TARGETS electric_joystick_drive
 
 if(CATKIN_ENABLE_TESTING)
   find_package(roslint REQUIRED)
-  set(ROSLINT_CPP_OPTS "--filter=-build/c++11,-runtime/references")
+  set(ROSLINT_CPP_OPTS "--filter=-build/c++11,-runtime/references,-legal/copyright")
   roslint_cpp()
   roslint_add_test()
 endif()
