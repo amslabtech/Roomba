@@ -52,6 +52,8 @@
   <run_depend>sensor_msgs</run_depend>
   <run_depend>tf</run_depend>
   <run_depend>message_runtime</run_depend>
+  <test_depend>rostest</test_depend>
+  <test_depend>roslint</test_depend>
 
 
   <!-- The export tag contains other, unspecified, tags -->

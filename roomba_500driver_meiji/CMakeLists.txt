@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 2.8.3)
+cmake_minimum_required(VERSION 3.5)
 project(roomba_500driver_meiji)
 
 ## Find catkin macros and libraries
@@ -181,11 +181,11 @@ add_dependencies(twist_to_roombactrl_converter ${PROJECT_NAME}_generate_messages
 # )
 
 ## Mark executables and/or libraries for installation
-# install(TARGETS roomba_500driver_meiji roomba_500driver_meiji_node
-#   ARCHIVE DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
-#   LIBRARY DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
-#   RUNTIME DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
-# )
+install(TARGETS roomba_500driver_meiji main500 roomba500sci serial twist_to_roombactrl_converter
+  ARCHIVE DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
+  LIBRARY DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
+  RUNTIME DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
+)
 
 ## Mark cpp header files for installation
 install(DIRECTORY include/${PROJECT_NAME}/
@@ -213,3 +213,10 @@ install(DIRECTORY include/${PROJECT_NAME}/
 
 ## Add folders to be run by python nosetests
 # catkin_add_nosetests(test)
+
+if(CATKIN_ENABLE_TESTING)
+  find_package(roslint REQUIRED)
+  set(ROSLINT_CPP_OPTS "--filter=-build/c++11,-runtime/references,-legal/copyright")
+  roslint_cpp()
+  roslint_add_test()
+endif()
