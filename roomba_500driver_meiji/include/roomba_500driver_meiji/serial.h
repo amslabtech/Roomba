@@ -1,3 +1,4 @@
+// Copyright 2023 amsl
 //---------------------------< /-/ AMSL /-/ >------------------------------
 /**
  * file         :       serial.h
@@ -16,8 +17,8 @@
  */
 //-----------------------------------------------------------------------------
 
-#ifndef _SERIAL_H
-#define _SERIAL_H
+#ifndef ROOMBA_500DRIVER_MEIJI__SERIAL_H_
+#define ROOMBA_500DRIVER_MEIJI__SERIAL_H_
 
 #include <termios.h>
 
@@ -28,26 +29,22 @@
 #define FALSE 0
 #define TRUE 1
 
-//#define DEBUG
+// #define DEBUG
 
 class Serial
 {
 private:
-
-	int fd_;//, c_, res_;
-	struct termios oldtio_, newtio_;
-
+  int fd_;  //, c_, res_;
+  struct termios oldtio_, newtio_;
 
 public:
+  Serial(int baudrate, const char * modemdevice, int vmin = 0, int lflag = 0);
+  ~Serial();
 
-	Serial(int baudrate, const char* modemdevice, int vmin=0, int lflag=0);
-	~Serial();
-
-	int read(unsigned char* p, int len);
-	int write(const unsigned char* p, int len);
-	void setVmin(int vmin);  // non canonical 時のreadで待つ最低限の文字数
-	void setRts(int);
-
+  int read(unsigned char * p, int len);
+  int write(const unsigned char * p, int len);
+  void setVmin(int vmin);  // non canonical 時のreadで待つ最低限の文字数
+  void setRts(int);
 };
 
-#endif //_SERIAL_H
+#endif  // ROOMBA_500DRIVER_MEIJI__SERIAL_H_

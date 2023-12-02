@@ -1,4 +1,4 @@
-Header header
+std_msgs/Header header
 
 LeftRight bump
 Wheeldrop wheeldrop
@@ -16,7 +16,7 @@ int16 distance
 int16 angle
 
 Song song
-Ir_Opcode opcode
+IrOpcode opcode
 uint8 dirt_detect
 uint8 charger_available
 uint8 open_interface_mode
