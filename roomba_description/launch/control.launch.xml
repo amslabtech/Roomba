@@ -1,0 +1,23 @@
+<?xml version="1.0"?>
+
+<launch>
+
+  <!-- Load joint controller configurations from YAML file to parameter server -->
+  <arg name="controller_yaml_path" default="$(find-pkg-share roomba_description)/config/controller.yaml"/>
+
+  <!-- load the controllers -->
+  <node name="controller_spawner" pkg="controller_manager"
+    exec="spawner" output="screen"
+    args="
+      joint_state_controller
+      diff_drive_controller
+  ">
+    <param from="$(var controller_yaml_path)"/>
+  </node>
+
+  <!-- convert joint states to TF transforms for rviz, etc -->
+  <node name="robot_state_publisher" pkg="robot_state_publisher" exec="robot_state_publisher">
+      <param name="robot_description" value="$(var robot_description)"/>
+  </node>
+
+</launch>

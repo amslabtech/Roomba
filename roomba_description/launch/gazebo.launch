@@ -1,7 +1,8 @@
 <?xml version="1.0"?>
 
 <launch>
-  <arg name="model" default="$(find roomba_description)/urdf/roomba.urdf.xacro"/>
+  <arg name="model_path" default="$(find-pkg-share roomba_description)/urdf/roomba.urdf.xacro"/>
+  <arg name="robot_description" default="$(command 'xacro $(var model_path)')"/>
 
   <arg name="paused" default="false"/>
   <arg name="use_sim_time" default="true"/>
@@ -14,9 +15,8 @@
   <arg name="roll" default="0.0"/>
   <arg name="pitch" default="0.0"/>
   <arg name="yaw" default="0.0"/>
-  <arg name="world" default="$(find amsl_gazebo_worlds)/worlds/ikuta_building_d_1f.world"/>
 
-  <include file="$(find gazebo_ros)/launch/empty_world.launch">
+  <include file="$(find-pkg-share gazebo_ros)/launch/gazebo.launch.py">
     <arg name="world_name" value="$(arg world)"/>
     <arg name="debug" value="$(arg debug)" />
     <arg name="gui" value="$(arg gui)" />
@@ -25,23 +25,16 @@
     <arg name="headless" value="$(arg headless)"/>
   </include>
 
-  <group ns="roomba">
-    <param name="robot_description" command="$(find xacro)/xacro $(arg model)"/>
-    <include file="$(find roomba_description)/launch/control.launch"/>
-  </group>
+  <include file="$(find-pkg-share roomba_description)/launch/control.launch"/>
 
-  <node name="urdf_spawner" pkg="gazebo_ros" type="spawn_model" respawn="false" output="screen"
+  <node name="urdf_spawner" pkg="gazebo_ros" type="spawn_entity.py" respawn="false" output="screen"
     args="-urdf
           -model roomba
-          -param roomba/robot_description
-          -x $(arg x)
-          -y $(arg y)
-          -z $(arg z)
-          -R $(arg roll)
-          -P $(arg pitch)
-          -Y $(arg yaw)"/>
-
-  <node name="vel_relay" pkg="topic_tools" type="relay" args="cmd_vel roomba/diff_drive_controller/cmd_vel"/>
-  <node name="odom_relay" pkg="topic_tools" type="relay" args="roomba/diff_drive_controller/odom odom"/>
-
+          -topic robot_description
+          -x $(var x)
+          -y $(var y)
+          -z $(var z)
+          -R $(var roll)
+          -P $(var pitch)
+          -Y $(var yaw)"/>
 </launch>

@@ -2,7 +2,6 @@
 
 <robot name="roomba" xmlns:xacro="http://ros.org/wiki/xacro">
 
-    <xacro:property name="pi" value="3.141592"/>
     <xacro:property name="base_radius" value="0.17"/>
     <xacro:property name="base_height" value="0.092"/>
     <xacro:property name="base_mass" value="2.0"/>

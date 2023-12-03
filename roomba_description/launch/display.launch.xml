@@ -1,0 +1,18 @@
+<?xml version="1.0" ?>
+<launch>
+    <arg name="model_path" default="$(find-pkg-share roomba_description)/urdf/roomba.urdf.xacro"/>
+    <arg name="robot_description" default="$(command 'xacro $(var model_path)')"/>
+
+    <!-- send fake joint value -->
+    <node name="joint_state_publisher" pkg="joint_state_publisher_gui" exec="joint_state_publisher_gui">
+    </node>
+
+    <!-- Combine joint values -->
+    <node name="robot_state_publisher" pkg="robot_state_publisher" exec="robot_state_publisher">
+        <param name="robot_description" value="$(var robot_description)"/>
+    </node>
+
+    <!-- show in Rviz -->
+    <node name="rviz2" pkg="rviz2" exec="rviz2" args="-d $(find-pkg-share roomba_description)/launch/roomba.rviz"/>
+
+</launch>
