@@ -44,6 +44,11 @@ ament_auto_add_executable(roomba500sci src/roomba500sci.cpp)
 ament_auto_add_executable(serial src/serial.cpp)
 ament_auto_add_executable(twist_to_roombactrl_converter src/twist_to_roombactrl_converter.cpp)
 
+install(DIRECTORY
+  launch
+  DESTINATION share/${PROJECT_NAME}
+)
+
 if(BUILD_TESTING)
   find_package(ament_lint_auto REQUIRED)
   set(ament_cmake_copyright_FOUND TRUE)
