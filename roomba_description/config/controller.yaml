@@ -1,43 +1,38 @@
-controller_manager:
+/controller_manager:
   ros__parameters:
-    joint_state_controller:
-      type: joint_state_controller/JointStateController
-      publish_rate: 50
+    update_rate: 100
+    use_sim_time: true
+
+    joint_state_broadcaster:
+      type: joint_state_broadcaster/JointStateBroadcaster
 
     diff_drive_controller:
-      type        : "diff_drive_controller/DiffDriveController"
-      left_wheel  : 'left_wheel_joint'
-      right_wheel : 'right_wheel_joint'
-      publish_rate: 50
-      pose_covariance_diagonal : [0.001, 0.001, 1000000.0, 1000000.0, 1000000.0, 1000.0]
-      twist_covariance_diagonal: [0.001, 0.001, 1000000.0, 1000000.0, 1000000.0, 1000.0]
+      type: diff_drive_controller/DiffDriveController
 
-      # wheel_separation : 0.2
-      # wheel_radius : 0.025
-
-      # Wheel separation and radius multipliers
-      wheel_separation_multiplier: 1.0 # default: 1.0
-      wheel_radius_multiplier    : 1.0 # default: 1.0
-
-      cmd_vel_timeout: 1.0
-
-      base_frame_id: base_footprint
-
-      enable_odom_tf: false
-
-      linear:
-        x:
-          has_velocity_limits    : true
-          max_velocity           : 0.5  # m/s
-          min_velocity           : -0.5 # m/s
-          has_acceleration_limits: true
-          max_acceleration       : 1.0  # m/s^2
-          min_acceleration       : -1.0 # m/s^2
-      angular:
-        z:
-          has_velocity_limits    : true
-          max_velocity           : 0.5  # rad/s
-          min_velocity           : -0.5
-          has_acceleration_limits: true
-          max_acceleration       : 1.0  # rad/s^2
-          min_acceleration       : -1.0
+/diff_drive_controller:
+  ros__parameters:
+    left_wheel_names:
+      - "left_wheel_joint"
+    right_wheel_names:
+      - "right_wheel_joint"
+    cmd_vel_timeout: 0.5
+    wheel_separation: 0.2
+    wheel_radius: 0.025
+    odom_frame_id: odom
+    base_frame_id: base_footprint
+    pose_covariance_diagonal: [0.001, 0.001, 0.0, 0.0, 0.0, 0.01]
+    twist_covariance_diagonal: [0.001, 0.0, 0.0, 0.0, 0.0, 0.01]
+    enable_odom_tf: true
+    use_stamped_vel: true
+    linear.x.has_velocity_limits: true
+    linear.x.max_velocity: 0.5
+    linear.x.min_velocity: -0.5
+    linear.x.has_acceleration_limits: true
+    linear.x.max_acceleration: 0.5
+    linear.x.min_acceleration: -0.5
+    angular.z.has_velocity_limits: true
+    angular.z.max_velocity: 1.0
+    angular.z.min_velocity: -1.0
+    angular.z.has_acceleration_limits: true
+    angular.z.max_acceleration: 1.0
+    angular.z.min_acceleration: -1.0

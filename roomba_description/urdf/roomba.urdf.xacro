@@ -48,13 +48,6 @@
         </inertial>
     </link>
 
-    <gazebo reference="base_link">
-        <selfCollide>false</selfCollide>
-        <mu1 value="0"/>
-        <mu2 value="0"/>
-        <material>Gazebo/White</material>
-    </gazebo>
-
     <xacro:macro name="add_wheel" params="*origin prefix parent_link">
         <joint name="${prefix}_wheel_joint" type="continuous">
             <xacro:insert_block name="origin"/>
@@ -90,22 +83,6 @@
                         izz="${wheel_mass * wheel_radius * wheel_radius / 4.0 + wheel_mass * wheel_width * wheel_width / 12.0}"/>
             </inertial>
         </link>
-        <transmission name="${prefix}_wheel_trans">
-            <type>transmission_interface/SimpleTransmission</type>
-            <joint name="${prefix}_wheel_joint">
-                <hardwareInterface>hardware_interface/VelocityJointInterface</hardwareInterface>
-            </joint>
-            <actuator name="${prefix}_wheel_motor">
-                <hardwareInterface>hardware_interface/VelocityJointInterface</hardwareInterface>
-                <mechanicalReduction>1</mechanicalReduction>
-            </actuator>
-        </transmission>
-        <gazebo reference="${prefix}_wheel_link">
-            <selfCollide>false</selfCollide>
-            <mu1 value="0.8"/>
-            <mu2 value="0.8"/>
-            <material>Gazebo/Gray</material>
-        </gazebo>
     </xacro:macro>
 
     <xacro:add_wheel prefix="left" parent_link="base_link">
@@ -150,18 +127,6 @@
         </inertial>
     </link>
 
-    <gazebo reference="caster_link">
-        <selfCollide>false</selfCollide>
-        <mu1 value="0"/>
-        <mu2 value="0"/>
-        <material>Gazebo/Gray</material>
-    </gazebo>
-
-    <gazebo>
-        <plugin name="gazebo_ros_control" filename="libgazebo_ros_control.so">
-            <robotNamespace>/roomba</robotNamespace>
-        </plugin>
-    </gazebo>
 
     <!-- laser -->
     <joint name="base_to_laser_link" type="fixed">
@@ -198,36 +163,9 @@
         </inertial>
     </link>
 
-     <gazebo reference="laser_link">
-        <sensor type="gpu_ray" name="laser">
-        <pose>0 0 0 0 0 0</pose>
-        <visualize>false</visualize>
-        <update_rate>40</update_rate>
-        <ray>
-            <scan>
-            <horizontal>
-                <samples>1080</samples>
-                <resolution>1</resolution>
-                <min_angle>${-pi*3/4.}</min_angle>
-                <max_angle>${pi*3/4.}</max_angle>
-            </horizontal>
-            </scan>
-            <range>
-                <min>0.1</min>
-                <max>30.0</max>
-                <resolution>0.01</resolution>
-            </range>
-            <noise>
-                <type>gaussian</type>
-                <mean>0.0</mean>
-                <stddev>0.01</stddev>
-            </noise>
-        </ray>
-        <plugin name="gpu_laser" filename="libgazebo_ros_gpu_laser.so">
-            <topicName>/scan</topicName>
-            <frameName>laser_link</frameName>
-        </plugin>
-        </sensor>
-    </gazebo>
+    <xacro:include filename="$(find roomba_description)/urdf/roomba.ros2_control.xacro"/>
+    <xacro:roomba_ros2_control name="roomba"/>
+    <xacro:include filename="$(find roomba_description)/urdf/roomba.gazebo.xacro"/>
+    <xacro:roomba_gazebo/>
 
 </robot>

@@ -1,0 +1,76 @@
+<?xml version="1.0"?>
+<robot xmlns:xacro="http://www.ros.org/wiki/xacro">
+  <xacro:macro name="roomba_gazebo">
+
+    <gazebo>
+      <plugin filename="libgazebo_ros2_control.so" name="gazebo_ros2_control">
+        <robot_sim_type>gazebo_ros2_control/GazeboSystem</robot_sim_type>
+        <parameters>$(find roomba_description)/config/controller.yaml</parameters>
+      </plugin>
+    </gazebo>
+
+    <gazebo reference="base_link">
+        <selfCollide>false</selfCollide>
+        <mu1 value="0"/>
+        <mu2 value="0"/>
+        <material>Gazebo/White</material>
+    </gazebo>
+
+    <gazebo reference="caster_link">
+        <selfCollide>false</selfCollide>
+        <mu1 value="0"/>
+        <mu2 value="0"/>
+        <material>Gazebo/Gray</material>
+    </gazebo>
+
+    <gazebo reference="right_wheel_link">
+        <selfCollide>false</selfCollide>
+        <mu1 value="0.8"/>
+        <mu2 value="0.8"/>
+        <material>Gazebo/Gray</material>
+    </gazebo>
+
+    <gazebo reference="left_wheel_link">
+        <selfCollide>false</selfCollide>
+        <mu1 value="0.8"/>
+        <mu2 value="0.8"/>
+        <material>Gazebo/Gray</material>
+    </gazebo>
+     <gazebo reference="laser_link">
+        <sensor type="gpu_ray" name="laser">
+          <pose>0 0 0 0 0 0</pose>
+          <visualize>false</visualize>
+          <update_rate>40</update_rate>
+          <ray>
+              <scan>
+              <horizontal>
+                  <samples>1080</samples>
+                  <resolution>1</resolution>
+                  <min_angle>${-pi*3/4.}</min_angle>
+                  <max_angle>${pi*3/4.}</max_angle>
+              </horizontal>
+              </scan>
+              <range>
+                  <min>0.1</min>
+                  <max>30.0</max>
+                  <resolution>0.01</resolution>
+              </range>
+              <noise>
+                  <type>gaussian</type>
+                  <mean>0.0</mean>
+                  <stddev>0.01</stddev>
+              </noise>
+          </ray>
+          <plugin name="laser" filename="libgazebo_ros_ray_sensor.so">
+              <output_type>sensor_msgs/LaserScan</output_type>
+              <frame_name>laser_link</frame_name>
+              <ros>
+                  <remapping>~/out:=/scan</remapping>
+              </ros>
+          </plugin>
+        </sensor>
+    </gazebo>
+
+  </xacro:macro>
+
+</robot>

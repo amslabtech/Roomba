@@ -1,6 +1,6 @@
 from ament_index_python import get_package_share_directory
 from launch import LaunchDescription
-from launch.actions import IncludeLaunchDescription
+from launch.actions import ExecuteProcess, IncludeLaunchDescription
 from launch.launch_description_sources import PythonLaunchDescriptionSource
 from launch.substitutions import Command, FindExecutable, PathJoinSubstitution
 from launch_ros.actions import Node
@@ -23,13 +23,6 @@ def generate_launch_description():
             ],
         )
     }
-    controller_yaml_path = PathJoinSubstitution(
-        [
-            get_package_share_directory("roomba_description"),
-            "config",
-            "controllers.yaml",
-        ]
-    )
 
     return LaunchDescription(
         [
@@ -68,11 +61,25 @@ def generate_launch_description():
                 ],
                 parameters=[{"use_sim_time": True}],
             ),
-            Node(
-                package="controller_manager",
-                executable="ros2_control_node",
-                exec_name="controller_manager",
-                parameters=[robot_description, controller_yaml_path],
+            ExecuteProcess(
+                cmd=[
+                    "ros2",
+                    "run",
+                    "controller_manager",
+                    "spawner",
+                    "diff_drive_controller",
+                ],
+                output="screen",
+            ),
+            ExecuteProcess(
+                cmd=[
+                    "ros2",
+                    "run",
+                    "controller_manager",
+                    "spawner",
+                    "joint_state_broadcaster",
+                ],
+                output="screen",
             ),
         ]
     )
