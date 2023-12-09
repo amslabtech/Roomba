@@ -7,17 +7,17 @@ from launch_ros.actions import Node
 
 
 def generate_launch_description():
-    roomba_description_share_path = get_package_share_directory("roomba_description")
+    roomba_description_share_path = get_package_share_directory('roomba_description')
     robot_description = {
-        "robot_description": Command(
+        'robot_description': Command(
             [
-                PathJoinSubstitution([FindExecutable(name="xacro")]),
-                " ",
+                PathJoinSubstitution([FindExecutable(name='xacro')]),
+                ' ',
                 PathJoinSubstitution(
                     [
                         roomba_description_share_path,
-                        "urdf",
-                        "roomba.urdf.xacro",
+                        'urdf',
+                        'roomba.urdf.xacro',
                     ],
                 ),
             ],
@@ -27,59 +27,59 @@ def generate_launch_description():
     return LaunchDescription(
         [
             Node(
-                package="robot_state_publisher",
-                executable="robot_state_publisher",
-                exec_name="robot_state_publisher",
+                package='robot_state_publisher',
+                executable='robot_state_publisher',
+                exec_name='robot_state_publisher',
                 parameters=[robot_description],
             ),
             IncludeLaunchDescription(
                 PythonLaunchDescriptionSource(
                     PathJoinSubstitution(
                         [
-                            get_package_share_directory("gazebo_ros"),
-                            "launch",
-                            "gazebo.launch.py",
+                            get_package_share_directory('gazebo_ros'),
+                            'launch',
+                            'gazebo.launch.py',
                         ]
                     )
                 )
             ),
             Node(
-                package="gazebo_ros",
-                executable="spawn_entity.py",
-                exec_name="urdf_spawner",
+                package='gazebo_ros',
+                executable='spawn_entity.py',
+                exec_name='urdf_spawner',
                 arguments=[
-                    "-entity",
-                    "roomba",
-                    "-topic",
-                    "/robot_description",
-                    "-x",
-                    "0",
-                    "-y",
-                    "0",
-                    "-z",
-                    "0",
+                    '-entity',
+                    'roomba',
+                    '-topic',
+                    '/robot_description',
+                    '-x',
+                    '0',
+                    '-y',
+                    '0',
+                    '-z',
+                    '0',
                 ],
-                parameters=[{"use_sim_time": True}],
+                parameters=[{'use_sim_time': True}],
             ),
             ExecuteProcess(
                 cmd=[
-                    "ros2",
-                    "run",
-                    "controller_manager",
-                    "spawner",
-                    "diff_drive_controller",
+                    'ros2',
+                    'run',
+                    'controller_manager',
+                    'spawner',
+                    'diff_drive_controller',
                 ],
-                output="screen",
+                output='screen',
             ),
             ExecuteProcess(
                 cmd=[
-                    "ros2",
-                    "run",
-                    "controller_manager",
-                    "spawner",
-                    "joint_state_broadcaster",
+                    'ros2',
+                    'run',
+                    'controller_manager',
+                    'spawner',
+                    'joint_state_broadcaster',
                 ],
-                output="screen",
+                output='screen',
             ),
         ]
     )
