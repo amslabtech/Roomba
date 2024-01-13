@@ -205,12 +205,10 @@ private:
 
     odom_pub_->publish(odom);  // 2013.10.09
 
-    last_time_ = current_time_;
-
     RCLCPP_INFO(
       get_logger(),
-      "dt:%f\t444444444l: %5d\tr:%5d\tdl %4d\tdr %4d\tx:%f\ty:%f\ttheta:%f",
-      last_time_.seconds() - current_time_.seconds(),
+      "dt:%f\l: %5d\tr:%5d\tdl %4d\tdr %4d\tx:%f\ty:%f\ttheta:%f",
+      current_time_.seconds() - last_time_.seconds(),
       sens.encoder_counts.left,
       sens.encoder_counts.right,
       roomba_->dEncoderLeft(),
@@ -219,6 +217,8 @@ private:
       pose_.y,
       pose_.theta / M_PI * 180.0
     );
+
+    last_time_ = current_time_;
   }
 
   double piToPI(double rad)
