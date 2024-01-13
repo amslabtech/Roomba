@@ -33,7 +33,7 @@ public:
 
     roomba_state_pub_ =
       this->create_publisher<roomba_500driver_meiji::msg::Roomba500State>("/roomba/states", 10);
-    odom_pub_ = this->create_publisher<nav_msgs::msg::Odometry>("/roomba/odometry", 10);
+    odom_pub_ = this->create_publisher<nav_msgs::msg::Odometry>("odom", 10);
     roomba_ctrl_sub_ = this->create_subscription<roomba_500driver_meiji::msg::RoombaCtrl>(
       "/roomba/control",
       10,
