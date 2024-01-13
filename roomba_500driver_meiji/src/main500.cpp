@@ -137,6 +137,7 @@ private:
   void timer_callback()
   {
     current_time_ = clock_.now();
+    const double dt = current_time_.seconds() - last_time_.seconds();
 
     roomba_500driver_meiji::msg::Roomba500State sens;
     sens.header.stamp = current_time_;
@@ -199,16 +200,16 @@ private:
 
     // set the velocity
     odom.child_frame_id = this->get_parameter("robot_frame").as_string();
-    odom.twist.twist.linear.x = roombactrl_.cntl.linear.x;
+    odom.twist.twist.linear.x = distance / dt;
     odom.twist.twist.linear.y = 0;
-    odom.twist.twist.angular.z = roombactrl_.cntl.angular.z;
+    odom.twist.twist.angular.z = angle / dt;
 
     odom_pub_->publish(odom);  // 2013.10.09
 
     RCLCPP_INFO(
       get_logger(),
       "dt:%f\l: %5d\tr:%5d\tdl %4d\tdr %4d\tx:%f\ty:%f\ttheta:%f",
-      current_time_.seconds() - last_time_.seconds(),
+      dt,
       sens.encoder_counts.left,
       sens.encoder_counts.right,
       roomba_->dEncoderLeft(),
