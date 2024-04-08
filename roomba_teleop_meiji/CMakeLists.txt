@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 2.8.3)
+cmake_minimum_required(VERSION 3.5)
 project(roomba_teleop_meiji)
 
 ## Find catkin macros and libraries
@@ -160,11 +160,11 @@ add_dependencies(electric_joystick_drive roomba_500driver_meiji_generate_message
 # )
 
 ## Mark executables and/or libraries for installation
-# install(TARGETS roomba_teleop_meiji roomba_teleop_meiji_node
-#   ARCHIVE DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
-#   LIBRARY DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
-#   RUNTIME DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
-# )
+install(TARGETS electric_joystick_drive
+  ARCHIVE DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
+  LIBRARY DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
+  RUNTIME DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
+)
 
 ## Mark cpp header files for installation
 # install(DIRECTORY include/${PROJECT_NAME}/
@@ -192,3 +192,10 @@ add_dependencies(electric_joystick_drive roomba_500driver_meiji_generate_message
 
 ## Add folders to be run by python nosetests
 # catkin_add_nosetests(test)
+
+if(CATKIN_ENABLE_TESTING)
+  find_package(roslint REQUIRED)
+  set(ROSLINT_CPP_OPTS "--filter=-build/c++11,-runtime/references,-legal/copyright")
+  roslint_cpp()
+  roslint_add_test()
+endif()
