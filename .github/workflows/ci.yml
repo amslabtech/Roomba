@@ -16,10 +16,10 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
-      - name: Install rosdep
+      - name: Install tools
         run: |
           apt-get update
-          apt-get install -y --no-install-recommends python3-rosdep
+          apt-get install -y --no-install-recommends python3-rosdep python3-vcstool
           rosdep init
       - name: Build
         uses: ros-tooling/action-ros-ci@v0.4
