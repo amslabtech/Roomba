@@ -21,7 +21,6 @@ jobs:
           apt-get update
           apt-get install -y --no-install-recommends python3-rosdep
           rosdep init
-          rosdep update
       - name: Build
         uses: ros-tooling/action-ros-ci@v0.4
         with:
