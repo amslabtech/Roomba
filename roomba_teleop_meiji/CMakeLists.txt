@@ -21,6 +21,4 @@ if(BUILD_TESTING)
   ament_lint_auto_find_test_dependencies()
 endif()
 
-ament_auto_package(
-  CONFIG_EXTRAS "roomba_teleop_meiji-extras.cmake"
-)
+ament_auto_package()
