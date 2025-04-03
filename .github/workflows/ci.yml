@@ -19,7 +19,7 @@ jobs:
       - name: Install tools
         run: |
           apt-get update
-          apt-get install -y --no-install-recommends git python3-rosdep python3-vcstool
+          apt-get install -y --no-install-recommends git python3-colcon-common-extentions python3-rosdep python3-vcstool
           rosdep init
       - name: Build
         uses: ros-tooling/action-ros-ci@v0.4
