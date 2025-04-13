@@ -22,7 +22,6 @@ public:
 protected:
   void SetUp() override
   {
-    // Initialize the node and publisher
     node_ = std::make_shared<rclcpp::Node>("test_twist_to_roombactrl_converter");
     ctrl_sub_ = node_->create_subscription<roomba_500driver_meiji::msg::RoombaCtrl>(
       "roomba/control", 10,
