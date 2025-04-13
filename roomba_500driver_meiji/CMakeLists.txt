@@ -42,7 +42,12 @@ target_link_libraries(
 ament_auto_add_executable(main500 src/main500.cpp)
 ament_auto_add_executable(roomba500sci src/roomba500sci.cpp)
 ament_auto_add_executable(serial src/serial.cpp)
-ament_auto_add_executable(twist_to_roombactrl_converter src/twist_to_roombactrl_converter.cpp)
+ament_auto_add_executable(twist_to_roombactrl_converter src/twist_to_roombactrl_converter_node.cpp src/twist_to_roombactrl_converter.cpp)
+
+install(
+  DIRECTORY include/
+  DESTINATION include
+)
 
 install(DIRECTORY
   launch
@@ -54,6 +59,11 @@ if(BUILD_TESTING)
   set(ament_cmake_copyright_FOUND TRUE)
   set(ament_cmake_cpplint_FOUND TRUE)
   ament_lint_auto_find_test_dependencies()
+
+  ament_auto_add_gtest(test_twist_to_roombactrl_converter
+    test/test_twist_to_roombactrl_converter.cpp
+    src/twist_to_roombactrl_converter.cpp
+  )
 endif()
 
 ament_auto_package()
